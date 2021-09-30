@@ -44,7 +44,6 @@ public class ImageMap {
 
     //从一张图片创建图片地图
     public static ImageMap create(BufferedImage image) {
-//        int type = image.getType() == BufferedImage.TYPE_4BYTE_ABGR ? BufferedImage.TYPE_4BYTE_ABGR : BufferedImage.TYPE_3BYTE_BGR;
         int w = (int) Math.ceil(((float) image.getWidth()) / 128f);
         int h = (int) Math.ceil(((float) image.getHeight()) / 128f);
         MapView[] views = new MapView[w * h];

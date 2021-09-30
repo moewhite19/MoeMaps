@@ -26,25 +26,29 @@ public class createimage extends HasCommandInterface {
             return false;
         }
         String name = args[0];
-        Player player;
+        Player player = null;
         if (args.length >= 2){
             player = Bukkit.getPlayer(args[1]);
         } else if (sender instanceof Player){
             player = (Player) sender;
         } else {
             sender.sendMessage("找不到玩家");
-            return false;
         }
         try{
             ImageMap map = plugin.createMap(name);
-            var callBack = player.getInventory().addItem(map.createItems());
-            //如果背包满了丢地上
-            if (!callBack.isEmpty()){
-                var loc = player.getLocation();
-                var world = loc.getWorld();
-                for (Map.Entry<Integer, ItemStack> entry : callBack.entrySet()) {
-                    world.dropItem(loc,entry.getValue());
+            if (player != null){
+                var callBack = player.getInventory().addItem(map.createItems());
+                //如果背包满了丢地上
+                if (!callBack.isEmpty()){
+                    var loc = player.getLocation();
+                    var world = loc.getWorld();
+                    for (Map.Entry<Integer, ItemStack> entry : callBack.entrySet()) {
+                        world.dropItem(loc,entry.getValue());
+                    }
                 }
+                sender.sendMessage((sender == player ? "已获取地图" + name : "已将地图 + " + name + " + 发送给" + player.getDisplayName()));
+            } else {
+                sender.sendMessage("已创建地图" + name);
             }
         }catch (IllegalArgumentException e){
             sender.sendMessage(e.getMessage());

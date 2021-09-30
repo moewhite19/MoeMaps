@@ -2,7 +2,6 @@ package cn.whiteg.moemaps.utils;
 
 import net.minecraft.world.level.saveddata.maps.WorldMap;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_17_R1.map.CraftMapView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapPalette;
@@ -13,21 +12,13 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.util.Objects;
 
 public class ImageUtils {
-    public static int maxSize = 1024; //最大图片大小
     static Color TRANSLUCENT = new Color(0,0,0,0); //透明颜色
     static int STEP = 128; //图片基数
-    static Field getWorldMapField;
-
-    static {
-        try{
-            getWorldMapField = CraftMapView.class.getDeclaredField("worldMap");
-            getWorldMapField.setAccessible(true);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
+    static Field getWorldMapField = null;
+    static Field getBytesField;
 
     //自动调整图片大小
     public static BufferedImage automaticScaling(InputStream inputStream,int maxSize) {
@@ -65,14 +56,35 @@ public class ImageUtils {
     }
 
     //写入视角的图片
-    public static boolean writeMapView(MapView mapView,BufferedImage image) {
-        if (mapView instanceof CraftMapView view){
+    public static boolean writeMapView(MapView view,BufferedImage image) {
+        if (getWorldMapField == null){
+            try{
+                //CraftBukkit获取nms
+                getWorldMapField = view.getClass().getDeclaredField("worldMap");
+                getWorldMapField.setAccessible(true);
+
+                //nms获取图片字节组
+                for (Field field : WorldMap.class.getDeclaredFields()) {
+                    if (field.getAnnotatedType().getType().getTypeName().equals(byte[].class.getName())){
+                        getBytesField = field;
+                        getBytesField.setAccessible(true);
+                        break;
+                    }
+                }
+
+                Objects.requireNonNull(getBytesField);
+            }catch (Exception e){
+                e.printStackTrace();
+                return false;
+            }
+        }
+        if (view != null){
             if (image.getHeight() != 128 || image.getWidth() != 128) return false;
             view.setLocked(true);
             view.setTrackingPosition(false);
             view.setUnlimitedTracking(false);
             try{
-                WorldMap worldMap = (WorldMap) getWorldMapField.get(mapView);
+                WorldMap worldMap = (WorldMap) getWorldMapField.get(view);
                 byte[] fimage = MapPalette.imageToBytes(image);
                 byte[] bytes = worldMap.g;
                 System.arraycopy(fimage,0,bytes,0,fimage.length);
