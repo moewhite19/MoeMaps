@@ -48,9 +48,9 @@ public class createimage extends HasCommandInterface {
                         world.dropItem(loc,entry.getValue());
                     }
                 }
-                sender.sendMessage((sender == player ? "已获取地图" + name : "已将地图 + " + name + " + 发送给" + player.getDisplayName()));
+                sender.sendMessage((sender == player ? "§b已获取地图§f" + name : "§b已将地图§f + " + name + " §b发送给§f " + player.getDisplayName()));
             } else {
-                sender.sendMessage("已创建地图" + name);
+                sender.sendMessage("§b已创建地图§f " + name);
             }
         }catch (IllegalArgumentException e){
             sender.sendMessage(e.getMessage());

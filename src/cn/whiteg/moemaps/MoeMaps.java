@@ -134,7 +134,9 @@ public class MoeMaps extends PluginBase {
     }
 
     public boolean removeMap(String name,boolean save) {
-        if (imageMaps.remove(name) != null){
+        var image = imageMaps.remove(name);
+        if (image != null){
+            image.reset();
             if (save){
                 getMapStore().set(name,null);
                 setting.saveStorage();

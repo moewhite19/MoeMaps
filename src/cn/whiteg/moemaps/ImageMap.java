@@ -136,6 +136,12 @@ public class ImageMap {
         return items;
     }
 
+    public void reset() {
+        for (var view : getMapViews()) {
+            ImageUtils.resetMap(view);
+        }
+    }
+
     public void serialize(ConfigurationSection cs) {
         cs.set("wight",wight);
         cs.set("high",high);

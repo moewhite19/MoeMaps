@@ -22,7 +22,7 @@ public class removeimage extends HasCommandInterface {
             return false;
         }
         String name = args[0];
-        sender.sendMessage((plugin.removeMap(name,true) ? "移除地图: " : "找不到地图") + name);
+        sender.sendMessage((plugin.removeMap(name,true) ? "§b移除地图: §f" : "§b找不到地图§f") + name);
         return false;
     }
 

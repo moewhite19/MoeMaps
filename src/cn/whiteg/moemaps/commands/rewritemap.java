@@ -25,7 +25,7 @@ public class rewritemap extends HasCommandInterface {
             var map = plugin.getMapFormName(name);
             var image = plugin.readImage(name);
             map.rewrite(image);
-            sender.sendMessage("已重新写入地图" + name);
+            sender.sendMessage("§b已重新写入地图 §f" + name);
         }catch (IllegalArgumentException exception){
             sender.sendMessage(exception.getMessage());
         }
@@ -44,6 +44,6 @@ public class rewritemap extends HasCommandInterface {
 
     @Override
     public String getDescription() {
-        return "重写指定地图(保留现有id)，当获取到的地图不是指定图片时使用（图片丢失） : <图片>";
+        return "重写指定地图(保留现有id)，图片丢失时使用） : <图片>";
     }
 }

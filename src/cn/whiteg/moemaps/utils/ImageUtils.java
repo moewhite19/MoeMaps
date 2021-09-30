@@ -1,6 +1,7 @@
 package cn.whiteg.moemaps.utils;
 
 import net.minecraft.world.level.saveddata.maps.WorldMap;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
@@ -122,5 +123,12 @@ public class ImageUtils {
         ItemStack item = new ItemStack(Material.FILLED_MAP);
         setMapView(item,view);
         return item;
+    }
+
+    //重置地图
+    public static void resetMap(MapView view) {
+        view.setWorld(Bukkit.getWorlds().get(0));
+        view.setLocked(false);
+        view.setTrackingPosition(true);
     }
 }

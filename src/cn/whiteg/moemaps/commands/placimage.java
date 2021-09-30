@@ -40,19 +40,19 @@ public class placimage extends HasCommandInterface {
         if (sender instanceof Player){
             player = (Player) sender;
         } else {
-            sender.sendMessage("这个指令只能管理员使用");
+            sender.sendMessage("§c这个指令只能玩家使用");
             return false;
         }
 
         try{
             ImageMap map = plugin.getMapFormName(name);
             if (map == null){
-                sender.sendMessage("地图 " + name + " 不存在");
+                sender.sendMessage("§b地图§f " + name + " §b不存在");
                 return false;
             }
 
             Bukkit.getPluginManager().registerEvents(new placing(player,map),plugin);
-            player.sendMessage("右键墙壁放置");
+            player.sendMessage(" §b右键墙壁放置§f" + name + ":§a" + map.getWight() + "x" + map.getHigh());
         }catch (Exception exception){
             sender.sendMessage(exception.getMessage());
             exception.printStackTrace();

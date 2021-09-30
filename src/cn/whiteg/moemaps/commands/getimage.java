@@ -41,7 +41,7 @@ public class getimage extends HasCommandInterface {
         try{
             ImageMap map = plugin.getMapFormName(name);
             if (map == null){
-                sender.sendMessage("地图 " + name + " 不存在");
+                sender.sendMessage("§b地图§f " + name + " §b不存在");
                 return false;
             }
 
