@@ -24,6 +24,7 @@ import java.util.List;
 
 public class placimage extends HasCommandInterface {
     private final MoeMaps plugin;
+    Placing placing = null;
 
     public placimage(MoeMaps plugin) {
         this.plugin = plugin;
@@ -50,8 +51,9 @@ public class placimage extends HasCommandInterface {
                 sender.sendMessage("§b地图§f " + name + " §b不存在");
                 return false;
             }
-
-            Bukkit.getPluginManager().registerEvents(new placing(player,map),plugin);
+            if (placing != null) placing.close();
+            placing = new Placing(player,map);
+            Bukkit.getPluginManager().registerEvents(placing,plugin);
             player.sendMessage(" §b右键墙壁放置§f" + name + " §a" + map.getWight() + "x" + map.getHigh());
         }catch (Exception exception){
             sender.sendMessage(exception.getMessage());
@@ -81,11 +83,11 @@ public class placimage extends HasCommandInterface {
         return "放置图片地图: <图片名称>";
     }
 
-    public class placing implements Listener {
+    public class Placing implements Listener {
         private final Player player;
         private final ImageMap imageMap;
 
-        public placing(Player player,ImageMap imageMap) {
+        public Placing(Player player,ImageMap imageMap) {
             this.player = player;
             this.imageMap = imageMap;
         }
@@ -97,6 +99,7 @@ public class placimage extends HasCommandInterface {
 
         @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
         public void onInteract(final PlayerInteractEvent e) {
+            if (!e.getAction().isRightClick()) return;
             var block = e.getClickedBlock();
             if (block == null) return;
             var face = e.getBlockFace();
@@ -124,6 +127,8 @@ public class placimage extends HasCommandInterface {
             final Block relative = block.getRelative(face);
             final int width = imageMap.getWight();
             final int height = imageMap.getHigh();
+
+            //检查空余位置
             for (int x = 0; x < width; ++x) {
                 for (int y = 0; y < height; ++y) {
                     if (!block.getRelative(x * xMod,-y,x * zMod).getType().isSolid()){
@@ -144,11 +149,20 @@ public class placimage extends HasCommandInterface {
         }
 
         private void setItemFrame(final Block block,final BlockFace face,ItemStack item) {
-            ItemFrame frame;
+            ItemFrame frame = null;
             try{
                 frame = block.getWorld().spawn(block.getLocation(),GlowItemFrame.class);
             }catch (IllegalArgumentException e){
-                return;
+                //创建展示框失败
+                var loc = block.getLocation();
+                for (var itemFrame : loc.getNearbyEntitiesByType(ItemFrame.class,2D,2D,2D)) {
+                    var loc1 = itemFrame.getLocation();
+                    if (loc.getBlockX() == loc1.getBlockX() && loc.getBlockY() == loc1.getBlockY() && loc.getBlockZ() == loc1.getBlockZ()){
+                        frame = itemFrame;
+                        break;
+                    }
+                }
+                if (frame == null) return;
             }
             frame.setFacingDirection(face,false);
             frame.setItem(item);
@@ -156,6 +170,7 @@ public class placimage extends HasCommandInterface {
 
         public void close() {
             HandlerList.unregisterAll(this);
+            placing = null;
         }
     }
 }
