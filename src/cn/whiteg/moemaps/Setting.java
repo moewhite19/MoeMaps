@@ -13,6 +13,7 @@ public class Setting {
     private static FileConfiguration storage;
     private final MoeMaps plugin;
     public boolean DEBUG;
+    public float compressionQuality; //图片压缩质量
 
     public Setting(MoeMaps plugin) {
         this.plugin = plugin;
@@ -42,6 +43,8 @@ public class Setting {
         }
 
         DEBUG = config.getBoolean("debug");
+
+        compressionQuality = Math.min(1f,Math.max(0f,(float) config.getDouble("CompressionQuality",1d)));
 
         storage = new YamlConfiguration();
         storage.options().pathSeparator('/');

@@ -1,2 +1,4 @@
 ver: 1
 debug: false
+#自动调整图像大小输出的图片压缩质量[0 - 1]
+CompressionQuality: 0.95f

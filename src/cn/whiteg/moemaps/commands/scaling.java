@@ -6,10 +6,14 @@ import cn.whiteg.moemaps.utils.ImageUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 
 public class scaling extends HasCommandInterface {
@@ -33,7 +37,7 @@ public class scaling extends HasCommandInterface {
         }
 
         int maxSize;
-        if (args.length > 2){
+        if (args.length >= 2){
             try{
                 maxSize = Integer.parseInt(args[1]);
             }catch (NumberFormatException e){
@@ -51,12 +55,28 @@ public class scaling extends HasCommandInterface {
                     sender.sendMessage("未知原因打开失败");
                     return false;
                 }
-
+                int type_i = name.lastIndexOf(".");
+                if (type_i <= 0) type_i = name.length();
+                File out = new File(plugin.imagesDir,name.substring(0,type_i) + "_" + image.getWidth() + "x" + image.getHeight() + name.substring(type_i));
                 boolean isARGB = image.getType() == BufferedImage.TYPE_4BYTE_ABGR;
-                File out = new File(plugin.imagesDir,name + "_" + image.getWidth() + "_" + image.getHeight() + (isARGB ? ".png" : ".jpg"));
-                boolean write = ImageIO.write(image,isARGB ? "PNG" : "JPEG",out);
-                sender.sendMessage(write ? "缩放图片已保存至:" + out : "缩放图片输出失败");
-                return write;
+                boolean done = false;
+                try{
+                    ImageWriter jpgWriter = ImageIO.getImageWritersByFormatName(isARGB ? "png" : "jpg").next();
+                    ImageWriteParam jpgWriteParam = jpgWriter.getDefaultWriteParam();
+                    jpgWriteParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+                    jpgWriteParam.setCompressionQuality(plugin.setting.compressionQuality);
+                    jpgWriter.setOutput(ImageIO.createImageOutputStream(out));
+                    IIOImage outputImage = new IIOImage(image,null,null);
+                    jpgWriter.write(null,outputImage,jpgWriteParam);
+                    jpgWriter.dispose();
+                    done = true;
+                }catch (IOException e){
+                    e.printStackTrace();
+                    done = false;
+                }
+//                boolean write = ImageIO.write(image,isARGB ? "PNG" : "JPEG",out);
+                sender.sendMessage(done ? "缩放图片已保存至:" + out : "缩放图片输出失败");
+                return done;
             }
         }catch (Exception e){
             sender.sendMessage("打开文件出现异常");

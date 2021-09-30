@@ -33,9 +33,9 @@ public class createimage extends HasCommandInterface {
 //        else if (sender instanceof Player){
 //            player = (Player) sender;
 //        }
-        else {
-            sender.sendMessage("找不到玩家");
-        }
+//        else {
+//            sender.sendMessage("找不到玩家");
+//        }
         try{
             ImageMap map = plugin.createMap(name);
             if (player != null){
