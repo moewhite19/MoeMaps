@@ -20,7 +20,9 @@ import java.util.logging.Logger;
 public class MoeMaps extends PluginBase {
     public static MoeMaps plugin;
     public final File imagesDir;
-    private final ReturnCache<List<String>> mapsCache;
+    private final ReturnCache<List<String>> loadImageListCache;
+    private final ReturnCache<List<String>> fileImageListCache;
+    private final ReturnCache<List<String>> allImageListCache;
     public Logger logger;
     public CommandManage mainCommand;
     public Setting setting;
@@ -31,7 +33,23 @@ public class MoeMaps extends PluginBase {
         plugin = this;
         logger = getLogger();
         imagesDir = new File(plugin.getDataFolder(),"images");
-        mapsCache = new ReturnCache<>() {
+        loadImageListCache = new ReturnCache<>(200) {
+            @Override
+            public List<String> update() {
+                return new ArrayList<>(imageMaps.keySet());
+            }
+        };
+
+        fileImageListCache = new ReturnCache<>(200) {
+            @Override
+            public List<String> update() {
+                var files = imagesDir.list();
+                if (files == null) return null;
+                return Arrays.asList(files);
+            }
+        };
+
+        allImageListCache = new ReturnCache<>() {
             @Override
             public List<String> update() {
                 var set = new HashSet<>(imageMaps.keySet());
@@ -155,9 +173,16 @@ public class MoeMaps extends PluginBase {
         }
     }
 
-    //获取所有可用图片
-    public List<String> getAllMaps() {
-        return mapsCache.get();
+    public List<String> getLoadedImageList() {
+        return loadImageListCache.get();
+    }
+
+    public List<String> getFileImageList() {
+        return fileImageListCache.get();
+    }
+
+    public List<String> getAllImageList() {
+        return allImageListCache.get();
     }
 
     public Economy getEconomy() {

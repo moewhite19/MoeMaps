@@ -67,7 +67,7 @@ public class createimage extends HasCommandInterface {
 
     @Override
     public List<String> complete(CommandSender sender,Command cmd,String label,String[] args) {
-        return getMatches(plugin.getAllMaps(),args);
+        return getMatches(plugin.getAllImageList(),args);
     }
 
     @Override

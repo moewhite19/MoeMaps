@@ -5,7 +5,6 @@ import cn.whiteg.moemaps.common.HasCommandInterface;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class rewritemap extends HasCommandInterface {
@@ -40,7 +39,7 @@ public class rewritemap extends HasCommandInterface {
 
     @Override
     public List<String> complete(CommandSender sender,Command cmd,String label,String[] args) {
-        return getMatches(new ArrayList<>(plugin.getImageMap().keySet()),args);
+        return getMatches(plugin.getLoadedImageList(),args);
     }
 
     @Override

@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapView;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -83,8 +82,7 @@ public class getimage extends HasCommandInterface {
     @Override
     public List<String> complete(CommandSender sender,Command cmd,String label,String[] args) {
         if (args.length == 1){
-            ArrayList<String> list = new ArrayList<>(plugin.getImageMap().keySet());
-            return getMatches(list,args);
+            return getMatches(plugin.getLoadedImageList(),args);
         } else if (args.length == 2){
             return getPlayersList(args);
         }

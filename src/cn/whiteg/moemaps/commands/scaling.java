@@ -10,7 +10,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.Arrays;
 import java.util.List;
 
 public class scaling extends HasCommandInterface {
@@ -73,9 +72,7 @@ public class scaling extends HasCommandInterface {
 
     @Override
     public List<String> complete(CommandSender sender,Command cmd,String label,String[] args) {
-        String[] list = plugin.imagesDir.list();
-        if (list == null) return null;
-        return getMatches(Arrays.asList(list),args);
+        return getMatches(plugin.getFileImageList(),args);
     }
 
     @Override

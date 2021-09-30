@@ -33,7 +33,7 @@ public class removeimage extends HasCommandInterface {
 
     @Override
     public List<String> complete(CommandSender sender,Command cmd,String label,String[] args) {
-        return getMatches(new ArrayList<>(plugin.getImageMap().keySet()),args);
+        return getMatches(new ArrayList<>(plugin.getLoadedImageList()),args);
     }
 
     @Override
