@@ -53,7 +53,7 @@ public class ImageMap {
             for (int x = 0; x < w; x++) {
                 BufferedImage bufferedImage = new BufferedImage(128,128,BufferedImage.TYPE_4BYTE_ABGR);
                 var graphics = bufferedImage.getGraphics();
-                graphics.drawImage(image,0,0,128,128,x * 128,y * 128,x * 128 + 128,y * 128 + 128,(img,infoflags,x1,y1,width,height) -> true);
+                graphics.drawImage(image,0,0,127,127,x * 128,y * 128,x * 128 + 127,y * 128 + 127,(img,infoflags,x1,y1,width,height) -> true);
                 var view = Bukkit.createMap(Bukkit.getWorlds().get(0));
                 if (!ImageUtils.writeMapView(view,bufferedImage)){
                     throw new IllegalArgumentException("setMapView失败");
@@ -78,7 +78,7 @@ public class ImageMap {
             for (int x = 0; x < w; x++) {
                 BufferedImage bufferedImage = new BufferedImage(128,128,BufferedImage.TYPE_4BYTE_ABGR);
                 var graphics = bufferedImage.getGraphics();
-                graphics.drawImage(image,0,0,128,128,x * 128,y * 128,x * 128 + 128,y * 128 + 128,(img,infoflags,x1,y1,width,height) -> true);
+                graphics.drawImage(image,0,0,127,127,x * 128,y * 128,x * 128 + 127,y * 128 + 127,(img,infoflags,x1,y1,width,height) -> true);
                 var view = views[i++];
                 if (!ImageUtils.writeMapView(view,bufferedImage)){
                     throw new IllegalArgumentException("writeMapView失败");
