@@ -52,7 +52,7 @@ public class placimage extends HasCommandInterface {
             }
 
             Bukkit.getPluginManager().registerEvents(new placing(player,map),plugin);
-            player.sendMessage(" §b右键墙壁放置§f" + name + ":§a" + map.getWight() + "x" + map.getHigh());
+            player.sendMessage(" §b右键墙壁放置§f" + name + " §a" + map.getWight() + "x" + map.getHigh());
         }catch (Exception exception){
             sender.sendMessage(exception.getMessage());
             exception.printStackTrace();
