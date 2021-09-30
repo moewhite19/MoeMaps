@@ -12,13 +12,24 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.util.Objects;
 
 public class ImageUtils {
     static Color TRANSLUCENT = new Color(0,0,0,0); //透明颜色
     static int STEP = 128; //图片基数
     static Field getWorldMapField = null;
     static Field getBytesField;
+
+    static {
+        //nms获取图片字节组
+        for (Field field : WorldMap.class.getDeclaredFields()) {
+            if (field.getAnnotatedType().getType().getTypeName().equals(byte[].class.getName())){
+                getBytesField = field;
+                getBytesField.setAccessible(true);
+                break;
+            }
+        }
+//        Objects.requireNonNull(getBytesField);
+    }
 
     //自动调整图片大小
     public static BufferedImage automaticScaling(InputStream inputStream,int maxSize) {
@@ -57,26 +68,15 @@ public class ImageUtils {
 
     //写入视角的图片
     public static boolean writeMapView(MapView view,BufferedImage image) {
-        if (getWorldMapField == null){
-            try{
+        try{
+            if (getWorldMapField == null){
                 //CraftBukkit获取nms
                 getWorldMapField = view.getClass().getDeclaredField("worldMap");
                 getWorldMapField.setAccessible(true);
-
-                //nms获取图片字节组
-                for (Field field : WorldMap.class.getDeclaredFields()) {
-                    if (field.getAnnotatedType().getType().getTypeName().equals(byte[].class.getName())){
-                        getBytesField = field;
-                        getBytesField.setAccessible(true);
-                        break;
-                    }
-                }
-
-                Objects.requireNonNull(getBytesField);
-            }catch (Exception e){
-                e.printStackTrace();
-                return false;
             }
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
         }
         if (view != null){
             if (image.getHeight() != 128 || image.getWidth() != 128) return false;
