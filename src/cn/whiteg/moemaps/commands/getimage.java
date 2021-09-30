@@ -28,12 +28,13 @@ public class getimage extends HasCommandInterface {
             return false;
         }
         String name = args[0];
-        Player player;
+        Player player = null;
         if (args.length >= 2){
             player = Bukkit.getPlayer(args[1]);
         } else if (sender instanceof Player){
             player = (Player) sender;
-        } else {
+        }
+        if (player == null){
             sender.sendMessage("找不到玩家");
             return false;
         }

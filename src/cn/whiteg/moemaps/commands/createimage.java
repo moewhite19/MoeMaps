@@ -29,9 +29,11 @@ public class createimage extends HasCommandInterface {
         Player player = null;
         if (args.length >= 2){
             player = Bukkit.getPlayer(args[1]);
-        } else if (sender instanceof Player){
-            player = (Player) sender;
-        } else {
+        }
+//        else if (sender instanceof Player){
+//            player = (Player) sender;
+//        }
+        else {
             sender.sendMessage("找不到玩家");
         }
         try{
