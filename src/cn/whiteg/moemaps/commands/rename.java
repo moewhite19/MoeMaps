@@ -52,7 +52,7 @@ public class rename extends HasCommandInterface {
 
     @Override
     public List<String> complete(CommandSender sender,Command cmd,String label,String[] args) {
-        return plugin.getAllImageList();
+        return plugin.getFullImageList();
     }
 
     @Override

@@ -183,7 +183,7 @@ public class MoeMaps extends PluginBase {
         return fileImageListCache.get();
     }
 
-    public List<String> getAllImageList() {
+    public List<String> getFullImageList() {
         return allImageListCache.get();
     }
 

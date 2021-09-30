@@ -71,7 +71,7 @@ public class place extends HasCommandInterface {
     @Override
     public List<String> complete(CommandSender sender,Command cmd,String label,String[] args) {
         if (args.length == 1){
-            return getMatches(plugin.getLoadedImageList(),args);
+            return getMatches(plugin.getFullImageList(),args);
         } else if (args.length == 2){
             return getPlayersList(args);
         }
