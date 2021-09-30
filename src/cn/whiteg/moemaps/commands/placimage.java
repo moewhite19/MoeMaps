@@ -144,10 +144,14 @@ public class placimage extends HasCommandInterface {
         }
 
         private void setItemFrame(final Block block,final BlockFace face,ItemStack item) {
-            ItemFrame i;
-            i = block.getWorld().spawn(block.getLocation(),GlowItemFrame.class);
-            i.setFacingDirection(face,false);
-            i.setItem(item);
+            ItemFrame frame;
+            try{
+                frame = block.getWorld().spawn(block.getLocation(),GlowItemFrame.class);
+            }catch (IllegalArgumentException e){
+                return;
+            }
+            frame.setFacingDirection(face,false);
+            frame.setItem(item);
         }
 
         public void close() {
