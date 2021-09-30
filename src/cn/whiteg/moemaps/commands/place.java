@@ -22,11 +22,11 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class placimage extends HasCommandInterface {
+public class place extends HasCommandInterface {
     private final MoeMaps plugin;
     Placing placing = null;
 
-    public placimage(MoeMaps plugin) {
+    public place(MoeMaps plugin) {
         this.plugin = plugin;
     }
 
@@ -46,7 +46,7 @@ public class placimage extends HasCommandInterface {
         }
 
         try{
-            ImageMap map = plugin.getMapFormName(name);
+            ImageMap map = plugin.createMap(name);
             if (map == null){
                 sender.sendMessage("§b地图§f " + name + " §b不存在");
                 return false;
@@ -65,7 +65,7 @@ public class placimage extends HasCommandInterface {
 
     @Override
     public boolean canUseCommand(CommandSender sender) {
-        return sender.hasPermission("moemaps.command.placimage");
+        return sender.hasPermission("moemaps.command.place");
     }
 
     @Override

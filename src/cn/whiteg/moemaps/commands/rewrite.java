@@ -7,10 +7,10 @@ import org.bukkit.command.CommandSender;
 
 import java.util.List;
 
-public class rewritemap extends HasCommandInterface {
+public class rewrite extends HasCommandInterface {
     private final MoeMaps plugin;
 
-    public rewritemap(MoeMaps plugin) {
+    public rewrite(MoeMaps plugin) {
         this.plugin = plugin;
     }
 
@@ -23,6 +23,10 @@ public class rewritemap extends HasCommandInterface {
         String name = args[0];
         try{
             var map = plugin.getMapFormName(name);
+            if (map == null){
+                sender.sendMessage(" §b找不到地图: §f" + name);
+                return false;
+            }
             var image = plugin.readImage(name);
             map.rewrite(image);
             sender.sendMessage("§b已重新写入地图 §f" + name);

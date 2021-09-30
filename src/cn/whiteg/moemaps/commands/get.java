@@ -14,10 +14,10 @@ import org.bukkit.map.MapView;
 import java.util.List;
 import java.util.Map;
 
-public class getimage extends HasCommandInterface {
+public class get extends HasCommandInterface {
     private final MoeMaps plugin;
 
-    public getimage(MoeMaps plugin) {
+    public get(MoeMaps plugin) {
         this.plugin = plugin;
     }
 
@@ -39,7 +39,7 @@ public class getimage extends HasCommandInterface {
             return false;
         }
         try{
-            ImageMap map = plugin.getMapFormName(name);
+            ImageMap map = plugin.createMap(name);
             if (map == null){
                 sender.sendMessage("§b地图§f " + name + " §b不存在");
                 return false;
@@ -77,7 +77,7 @@ public class getimage extends HasCommandInterface {
 
     @Override
     public boolean canUseCommand(CommandSender sender) {
-        return sender.hasPermission("moemaps.command.getimage");
+        return sender.hasPermission("moemaps.command.get");
     }
 
     @Override

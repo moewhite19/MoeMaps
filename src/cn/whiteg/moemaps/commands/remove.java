@@ -8,10 +8,10 @@ import org.bukkit.command.CommandSender;
 import java.util.ArrayList;
 import java.util.List;
 
-public class removeimage extends HasCommandInterface {
+public class remove extends HasCommandInterface {
     private final MoeMaps plugin;
 
-    public removeimage(MoeMaps plugin) {
+    public remove(MoeMaps plugin) {
         this.plugin = plugin;
     }
 
@@ -38,6 +38,6 @@ public class removeimage extends HasCommandInterface {
 
     @Override
     public String getDescription() {
-        return "移除图片";
+        return "移除图片(从已加载地图移除，非删除)";
     }
 }
