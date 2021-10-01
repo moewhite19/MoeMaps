@@ -47,7 +47,7 @@ public class scaling extends HasCommandInterface {
         } else {
             maxSize = plugin.setting.defaultMaxSize;
         }
-        
+
         maxSize = Math.max(1,maxSize) * 128;
 
         try{
@@ -59,9 +59,9 @@ public class scaling extends HasCommandInterface {
                 }
                 int type_i = name.lastIndexOf(".");
                 if (type_i <= 0) type_i = name.length();
-                File out = new File(plugin.imagesDir,name.substring(0,type_i) + "_" + image.getWidth() + "x" + image.getHeight() + name.substring(type_i));
+                File out = new File(plugin.imagesDir,name.substring(0,type_i) + "_" + (int) Math.ceil(image.getWidth() / 128f) + "x" + (int) Math.ceil(image.getHeight() / 128f) + name.substring(type_i));
                 boolean isARGB = image.getType() == BufferedImage.TYPE_4BYTE_ABGR;
-                boolean done = false;
+                boolean done;
                 try{
                     ImageWriter jpgWriter = ImageIO.getImageWritersByFormatName(isARGB ? "png" : "jpg").next();
                     ImageWriteParam jpgWriteParam = jpgWriter.getDefaultWriteParam();
