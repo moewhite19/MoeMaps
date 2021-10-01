@@ -9,11 +9,12 @@ import java.io.IOException;
 import java.util.Set;
 
 public class Setting {
-    private final static int CONFIGVER = 1;
+    private final static int CONFIGVER = 2;
     private static FileConfiguration storage;
     private final MoeMaps plugin;
     public boolean DEBUG;
     public float compressionQuality; //图片压缩质量
+    public int defaultMaxSize; //最大大小
 
     public Setting(MoeMaps plugin) {
         this.plugin = plugin;
@@ -45,6 +46,7 @@ public class Setting {
         DEBUG = config.getBoolean("debug");
 
         compressionQuality = Math.min(1f,Math.max(0f,(float) config.getDouble("CompressionQuality",1d)));
+        defaultMaxSize = Math.max(128,config.getInt("maxSize",1024));
 
         storage = new YamlConfiguration();
         storage.options().pathSeparator('/');

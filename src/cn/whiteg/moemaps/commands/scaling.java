@@ -45,7 +45,7 @@ public class scaling extends HasCommandInterface {
                 return false;
             }
         } else {
-            maxSize = 1024;
+            maxSize = plugin.setting.defaultMaxSize;
         }
 
         try{
@@ -97,6 +97,6 @@ public class scaling extends HasCommandInterface {
 
     @Override
     public String getDescription() {
-        return "自动调整指定图片尺寸，使其能和地图边框对其: <图片名> [图片最大大小:默认1024]";
+        return "自动调整指定图片尺寸，使其能和地图边框对其: <图片名> [图片最大大小:默认" + plugin.setting.defaultMaxSize + "]";
     }
 }
