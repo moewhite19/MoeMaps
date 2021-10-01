@@ -2,11 +2,13 @@ package cn.whiteg.moemaps;
 
 import cn.whiteg.moemaps.common.CommandManage;
 import cn.whiteg.moemaps.common.PluginBase;
+import cn.whiteg.moemaps.listener.AutoSaveListener;
 import cn.whiteg.moemaps.utils.ReturnCache;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import javax.imageio.ImageIO;
@@ -17,7 +19,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 
-public class MoeMaps extends PluginBase {
+public class MoeMaps extends PluginBase implements Listener {
     public static MoeMaps plugin;
     public final File imagesDir;
     private final ReturnCache<List<String>> loadImageListCache;
@@ -28,6 +30,7 @@ public class MoeMaps extends PluginBase {
     public Setting setting;
     Map<String, ImageMap> imageMaps = new HashMap<>();
     private Economy economy;
+    private AutoSaveListener autoSaveListener;
 
     public MoeMaps() {
         plugin = this;
@@ -79,6 +82,8 @@ public class MoeMaps extends PluginBase {
         }
         loadMaps();
 
+        autoSaveListener = new AutoSaveListener(this);
+
         logger.info("全部加载完成" + imageMaps.size());
         Bukkit.getScheduler().runTask(this,() -> {
             if (Bukkit.getPluginManager().getPlugin("Vault") != null){
@@ -129,7 +134,7 @@ public class MoeMaps extends PluginBase {
         if (save){
             var ms = getMapStore().createSection(name);
             imageMap.serialize(ms);
-            setting.saveStorage();
+            autoSaveListener.setChange(true);
         }
     }
 
@@ -139,7 +144,7 @@ public class MoeMaps extends PluginBase {
             image.reset();
             if (save){
                 getMapStore().set(name,null);
-                setting.saveStorage();
+                autoSaveListener.setChange(true);
             }
             return true;
         }
@@ -190,4 +195,5 @@ public class MoeMaps extends PluginBase {
     public Economy getEconomy() {
         return economy;
     }
+
 }

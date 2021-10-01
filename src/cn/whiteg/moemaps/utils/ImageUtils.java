@@ -8,11 +8,17 @@ import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapPalette;
 import org.bukkit.map.MapView;
 
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class ImageUtils {
     static Color TRANSLUCENT = new Color(0,0,0,0); //透明颜色
@@ -31,62 +37,102 @@ public class ImageUtils {
 //        Objects.requireNonNull(getBytesField);
     }
 
-    //自动调整图片大小
-    public static BufferedImage automaticScaling(InputStream inputStream,int maxSize) {
+    //自动拉伸图片
+    public static BufferedImage scalingImage(InputStream inputStream,int maxSize,boolean cut) {
         try{
             BufferedImage inImage = ImageIO.read(inputStream);
-            int type = inImage.getType() == BufferedImage.TYPE_3BYTE_BGR ? BufferedImage.TYPE_3BYTE_BGR : BufferedImage.TYPE_4BYTE_ABGR;
-            double w = inImage.getWidth() / 128d, h = inImage.getHeight() / 128d;
+            int w = inImage.getWidth(), h = inImage.getHeight(); //当前图片大小
+            int type = inImage.getType();
+            double bw = w / 128d, bh = h / 128d; //图片方块大小
+            double ratioHW = bh / bw; //比例
 
             //剪裁长和宽
-            double ratioHW = h / w; //比例
-            if (w > maxSize){
-                double s = w - maxSize;
-                w = maxSize;
-                h -= s * ratioHW;
+            if (bw > maxSize){
+                double s = bw - maxSize;
+                bw = maxSize;
+                bh -= s * ratioHW;
             }
-            if (h > maxSize){
-                double s = h - maxSize;
-                h = maxSize;
-                w -= (s / ratioHW);
-            }
-
-            int fw = Math.max(1,(int) w) * 128, fh = Math.max(1,(int) h) * 128;//剪裁成128的整数
-
-            //如果图片小于128就让图片居中
-            int modX = 0, modW = fw;
-            if (w < 1){
-                modW = inImage.getWidth();
-                modX = (128 - modW) / 2;
-            }
-            int modY = 0;
-            int modH = fh;
-            if (h < 1){
-                modH = inImage.getHeight();
-                modY = (128 - modH) / 2;
+            if (bh > maxSize){
+                double s = bh - maxSize;
+                bh = maxSize;
+                bw -= (s / ratioHW);
             }
 
+            //框架大小,使用五舍六入
+            int fw = Math.max(1,new BigDecimal(bw).setScale(0,RoundingMode.HALF_DOWN).intValue()) * 128, fh = Math.max(1,new BigDecimal(bh).setScale(0,RoundingMode.HALF_DOWN).intValue()) * 128;//剪裁成128的整数
+
+            //修正大小
+            int modW, modH;
+
+            if (w < 128 && h < 128){  //小于128单个展示框的图片居中显示
+                modW = w;
+                modH = h;
+            } else if (cut){ //剪裁
+                modW = fw;
+                modH = (int) (fw * ratioHW);
+                if (modH < fh){
+                    int c = fh - modH;
+                    modH = fh;
+                    modW += c / ratioHW;
+                }
+            } else { //拉伸
+                modW = fw;
+                modH = fh;
+            }
+
+            //偏移值
+            int modX = 0, modY = 0;
+            if (modW != fw){
+                modX = (fw - modW) / 2;
+            }
+            if (modH != fh){
+                modY = (fh - modH) / 2;
+            }
             BufferedImage nImage = new BufferedImage(fw,fh,type);
             var graphics = nImage.getGraphics();
             graphics.drawImage(inImage,modX,modY,modW,modH,TRANSLUCENT,(img,infoflags,x,y,width,height) -> true);
             return nImage;
         }catch (Exception e){
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return null;
+    }
+
+
+    /**
+     * @param image   输入图片
+     * @param output  输出，可以是File也可以是OutputStream
+     * @param quality 图片质量,范围[0-1]
+     * @return 是否成功
+     */
+    public static boolean writeImage(BufferedImage image,Object output,float quality) {
+        try{
+            ImageWriter jpgWriter = ImageIO.getImageWritersByFormatName(image.getColorModel().hasAlpha() ? "png" : "jpg").next();
+            ImageWriteParam jpgWriteParam = jpgWriter.getDefaultWriteParam();
+            jpgWriteParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+            jpgWriteParam.setCompressionQuality(quality);
+            jpgWriter.setOutput(ImageIO.createImageOutputStream(output));
+            IIOImage outputImage = new IIOImage(image,null,null);
+            jpgWriter.write(null,outputImage,jpgWriteParam);
+            jpgWriter.dispose();
+            return true;
+        }catch (IOException e){
+            e.printStackTrace();
+            return false;
+        }
     }
 
     //写入视角的图片
     public static boolean writeMapView(MapView view,BufferedImage image) {
-        try{
-            if (getWorldMapField == null){
+        if (getWorldMapField == null){
+            try{
                 //CraftBukkit获取nms
                 getWorldMapField = view.getClass().getDeclaredField("worldMap");
                 getWorldMapField.setAccessible(true);
+            }catch (Exception e){
+                e.printStackTrace();
+                return false;
             }
-        }catch (Exception e){
-            e.printStackTrace();
-            return false;
         }
         if (view != null){
             if (image.getHeight() != 128 || image.getWidth() != 128) return false;

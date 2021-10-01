@@ -14,7 +14,8 @@ public class Setting {
     private final MoeMaps plugin;
     public boolean DEBUG;
     public float compressionQuality; //图片压缩质量
-    public int defaultMaxSize; //最大大小
+    public int defaultMaxSize; //默认最大图片大小
+    public boolean defaultCut; //默认剪裁图片
 
     public Setting(MoeMaps plugin) {
         this.plugin = plugin;
@@ -46,7 +47,9 @@ public class Setting {
         DEBUG = config.getBoolean("debug");
 
         compressionQuality = Math.min(1f,Math.max(0f,(float) config.getDouble("CompressionQuality",1d)));
-        defaultMaxSize = Math.max(1,config.getInt("defaultMaxSize",6));
+        defaultMaxSize = Math.max(1,config.getInt("DefaultMaxSize",6));
+        defaultCut = config.getBoolean("DefaultCut",false);
+
 
         storage = new YamlConfiguration();
         storage.options().pathSeparator('/');

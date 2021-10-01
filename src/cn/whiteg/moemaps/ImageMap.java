@@ -76,7 +76,7 @@ public class ImageMap {
         int i = 0;
         for (int y = 0; y < h; y++) {
             for (int x = 0; x < w; x++) {
-                BufferedImage bufferedImage = new BufferedImage(128,128,BufferedImage.TYPE_4BYTE_ABGR);
+                BufferedImage bufferedImage = new BufferedImage(128,128,image.getType());
                 var graphics = bufferedImage.getGraphics();
                 graphics.drawImage(image,0,0,128,128,x * 128,y * 128,x * 128 + 128,y * 128 + 128,(img,infoflags,x1,y1,width,height) -> true);
                 var view = views[i++];

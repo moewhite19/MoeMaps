@@ -6,14 +6,9 @@ import cn.whiteg.moemaps.utils.ImageUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-import javax.imageio.IIOImage;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.List;
 
 public class scaling extends HasCommandInterface {
@@ -22,6 +17,7 @@ public class scaling extends HasCommandInterface {
     public scaling(MoeMaps plugin) {
         this.plugin = plugin;
     }
+
 
     @Override
     public boolean executo(CommandSender sender,Command cmd,String str,String[] args) {
@@ -33,6 +29,7 @@ public class scaling extends HasCommandInterface {
         var file = new File(plugin.imagesDir,name);
         if (!file.exists() || file.isDirectory()){
             sender.sendMessage("图片不存在");
+            //伸缩
             return false;
         }
 
@@ -48,38 +45,30 @@ public class scaling extends HasCommandInterface {
             maxSize = plugin.setting.defaultMaxSize;
         }
 
+        boolean cut;
+        if (args.length >= 3){
+            try{
+                cut = Boolean.parseBoolean(args[2]);
+            }catch (NumberFormatException e){
+                sender.sendMessage("无效参数: " + args[2]);
+                return false;
+            }
+        } else {
+            cut = plugin.setting.defaultCut;
+        }
+
         try{
             try (FileInputStream input = new FileInputStream(file)){
-                BufferedImage image = ImageUtils.automaticScaling(input,maxSize);
-                if (image == null){
-                    sender.sendMessage("未知原因打开失败");
-                    return false;
-                }
+                BufferedImage image = ImageUtils.scalingImage(input,maxSize,cut);
                 int type_i = name.lastIndexOf(".");
                 if (type_i <= 0) type_i = name.length();
                 File out = new File(plugin.imagesDir,name.substring(0,type_i) + "_" + (int) Math.ceil(image.getWidth() / 128f) + "x" + (int) Math.ceil(image.getHeight() / 128f) + name.substring(type_i));
-                boolean isARGB = image.getType() == BufferedImage.TYPE_4BYTE_ABGR;
-                boolean done;
-                try{
-                    ImageWriter jpgWriter = ImageIO.getImageWritersByFormatName(isARGB ? "png" : "jpg").next();
-                    ImageWriteParam jpgWriteParam = jpgWriter.getDefaultWriteParam();
-                    jpgWriteParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-                    jpgWriteParam.setCompressionQuality(plugin.setting.compressionQuality);
-                    jpgWriter.setOutput(ImageIO.createImageOutputStream(out));
-                    IIOImage outputImage = new IIOImage(image,null,null);
-                    jpgWriter.write(null,outputImage,jpgWriteParam);
-                    jpgWriter.dispose();
-                    done = true;
-                }catch (IOException e){
-                    e.printStackTrace();
-                    done = false;
-                }
-//                boolean write = ImageIO.write(image,isARGB ? "PNG" : "JPEG",out);
+                boolean done = ImageUtils.writeImage(image,file,plugin.setting.compressionQuality);
                 sender.sendMessage(done ? "缩放图片已保存至:" + out : "缩放图片输出失败");
                 return done;
             }
         }catch (Exception e){
-            sender.sendMessage("打开文件出现异常");
+            sender.sendMessage("转换文件过程出现异常");
             e.printStackTrace();
         }
         return false;
