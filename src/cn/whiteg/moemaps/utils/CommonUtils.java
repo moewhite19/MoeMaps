@@ -13,28 +13,24 @@ public class CommonUtils {
         try{
             char e = str.charAt(str.length() - 1);
             switch (e) {
-                case 'S':
-                case 's': {
+                case 'S','s' -> {
                     str = str.substring(0,str.length() - 1);
-                    return Long.valueOf(str) * second;
+                    return Long.parseLong(str) * second;
                 }
-                case 'M':
-                case 'm': {
+                case 'M','m' -> {
                     str = str.substring(0,str.length() - 1);
-                    return Long.valueOf(str) * minute;
+                    return Long.parseLong(str) * minute;
                 }
-                case 'H':
-                case 'h': {
+                case 'H','h' -> {
                     str = str.substring(0,str.length() - 1);
-                    return Long.valueOf(str) * hour;
+                    return Long.parseLong(str) * hour;
                 }
-                case 'D':
-                case 'd': {
+                case 'D','d' -> {
                     str = str.substring(0,str.length() - 1);
-                    return Long.valueOf(str) * day;
+                    return Long.parseLong(str) * day;
                 }
             }
-            return Long.valueOf(str) * 60000;
+            return Long.parseLong(str) * 60000;
         }catch (NumberFormatException ex){
             return -1;
         }
@@ -45,23 +41,20 @@ public class CommonUtils {
         try{
             char e = str.charAt(str.length() - 1);
             switch (e) {
-                case 'k':
-                case 'K': {
+                case 'k','K' -> {
                     str = str.substring(0,str.length() - 1);
-                    return Long.valueOf(str) * 1024L;
+                    return Long.parseLong(str) * 1024L;
                 }
-                case 'm':
-                case 'M': {
+                case 'm','M' -> {
                     str = str.substring(0,str.length() - 1);
-                    return Long.valueOf(str) * 1048576L;
+                    return Long.parseLong(str) * 1048576L;
                 }
-                case 'g':
-                case 'G': {
+                case 'g','G' -> {
                     str = str.substring(0,str.length() - 1);
-                    return Long.valueOf(str) * 1073741824L;
+                    return Long.parseLong(str) * 1073741824L;
                 }
             }
-            return Long.valueOf(str) * 1048576L;
+            return Long.parseLong(str) * 1048576L;
         }catch (NumberFormatException ex){
             return 0;
         }
@@ -108,7 +101,7 @@ public class CommonUtils {
         return sb.toString();
     }
 
-    public static String tanSize(long l) {
+    public static String tanSpace(long l) {
         if (l < 0) return "NaN";
         final double k = 1024D;
         final DecimalFormat df = new DecimalFormat("#.00");

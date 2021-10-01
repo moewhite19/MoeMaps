@@ -41,23 +41,29 @@ public class scaling extends HasCommandInterface {
         float quality = plugin.setting.compressionQuality;
         if (args.length > 1){
             for (int i = 1; i < args.length; i++) {
-                String arg = args[args.length - 1];
-                if (arg == null || arg.length() < 3){
+                String arg = args[i];
+                int index = arg.indexOf(':');
+                if (index < 0 || index == arg.length() - 1){
                     sender.sendMessage("无效参数: " + arg);
                     return false;
                 }
-                char key = arg.charAt(0);
-                String o = arg.substring(2);
+                String key = arg.substring(0,index);
+                String o = arg.substring(index + 1);
                 try{
-                    if (key == 'm'){ //最大地图
-                        maxSize = Math.max(Integer.parseInt(o),1);
-                    } else if (key == 'c'){ //剪裁
-                        cut = Short.parseShort(o) > 0;
-                    } else if (key == 'q'){ //质量
-                        quality = Math.max(Math.min(Float.parseFloat(o),1f),0f);
+                    switch (key) {
+                        case "max" ->  //最大地图
+                                maxSize = Math.max(Integer.parseInt(o),1);
+                        case "cut" ->  //剪裁
+                                cut = Short.parseShort(o) > 0;
+                        case "quality" ->  //质量
+                                quality = Math.max(Math.min(Float.parseFloat(o),1f),0f);
+                        default -> {
+                            sender.sendMessage("未知参数: " + arg);
+                            return false;
+                        }
                     }
                 }catch (NumberFormatException e){
-                    sender.sendMessage("无效参数: " + arg);
+                    sender.sendMessage("参数异常: " + arg);
                     return false;
                 }
             }
@@ -66,7 +72,7 @@ public class scaling extends HasCommandInterface {
         try (FileInputStream input = new FileInputStream(file)){
             BufferedImage image = ImageUtils.scalingImage(input,maxSize,cut);
             int type_i = name.lastIndexOf(".");
-            if (type_i <= 0) type_i = name.length();
+            if (type_i <= 0) type_i = name.length(); //如果找不到小数点就直接储存全名
             File out = new File(plugin.imagesDir,name.substring(0,type_i) + "_" + (int) Math.ceil(image.getWidth() / 128f) + "x" + (int) Math.ceil(image.getHeight() / 128f) + name.substring(type_i));
             boolean done = ImageUtils.writeImage(image,out,quality);
             sender.sendMessage(done ? "缩放图片已保存至:" + out : "缩放图片输出失败");
@@ -90,21 +96,21 @@ public class scaling extends HasCommandInterface {
             return getMatches(plugin.getFileImageList(),args);
         } else {
             String arg = args[args.length - 1];
+            List<String> list = Arrays.asList("max:","cut:","quality:");
             if (arg == null || arg.isEmpty()){
-                return getMatches(arg,Arrays.asList("m:","c:","q:"));
-            } else if (arg.startsWith("m")){
-                return Collections.singletonList("m:" + plugin.setting.defaultMaxSize);
-            } else if (arg.startsWith("c")){
-                return getMatches(args,Collections.singletonList("c:" + (plugin.setting.defaultCut ? 1 : 0)));
-            } else if (arg.startsWith("q")){
-                return Collections.singletonList("m:" + plugin.setting.compressionQuality);
-            }
+                return getMatches(arg,list);
+            } else if (arg.startsWith("max:")){
+                return Collections.singletonList("max:" + plugin.setting.defaultMaxSize);
+            } else if (arg.startsWith("cut:")){
+                return getMatches(args,Collections.singletonList("cut:" + (plugin.setting.defaultCut ? 1 : 0)));
+            } else if (arg.startsWith("quality:")){
+                return Collections.singletonList("max:" + plugin.setting.compressionQuality);
+            } else return getMatches(list,args);
         }
-        return null;
     }
 
     @Override
     public String getDescription() {
-        return "§b自动调整指定图片尺寸，使其能和地图边框对其§f: <图片名> [m:最大尺寸] [q:质量] [c:剪裁模式]";
+        return "§b自动调整指定图片尺寸，使其能和地图边框对其§f: <图片名> [max:最大尺寸] [quality:质量] [cut:剪裁模式]";
     }
 }

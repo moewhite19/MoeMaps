@@ -64,7 +64,7 @@ public abstract class Downloader extends Thread {
             code = conn.getResponseCode();
 
             size = conn.getContentLengthLong();
-            info("开始下载" + url + "大小" + CommonUtils.tanSize(size));
+            info("开始下载" + url + "大小" + CommonUtils.tanSpace(size));
             //调用输入
             //调用输入
             try (var input = conn.getInputStream()){
