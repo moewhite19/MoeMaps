@@ -6,6 +6,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 public class rename extends HasCommandInterface {
@@ -52,7 +53,12 @@ public class rename extends HasCommandInterface {
 
     @Override
     public List<String> complete(CommandSender sender,Command cmd,String label,String[] args) {
-        return getMatches(plugin.getFullImageList(),args);
+        if (args.length == 1){
+            return getMatches(plugin.getFullImageList(),args);
+        } else if (args.length == 2){
+            return Collections.singletonList(args[0]);
+        }
+        return null;
     }
 
     @Override

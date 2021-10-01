@@ -99,7 +99,7 @@ public class place extends HasCommandInterface {
 
         @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
         public void onInteract(final PlayerInteractEvent e) {
-            if (!e.getAction().isRightClick()) return;
+            if (!player.equals(e.getPlayer()) || !e.getAction().isRightClick()) return;
             var block = e.getClickedBlock();
             if (block == null) return;
             var face = e.getBlockFace();
