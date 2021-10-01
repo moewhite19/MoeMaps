@@ -39,7 +39,7 @@ public class scaling extends HasCommandInterface {
         int maxSize;
         if (args.length >= 2){
             try{
-                maxSize = Integer.parseInt(args[1]);
+                maxSize = Math.max(Integer.parseInt(args[1]),1);
             }catch (NumberFormatException e){
                 sender.sendMessage("无效参数: " + args[1]);
                 return false;
@@ -47,8 +47,6 @@ public class scaling extends HasCommandInterface {
         } else {
             maxSize = plugin.setting.defaultMaxSize;
         }
-
-        maxSize = Math.max(1,maxSize) * 128;
 
         try{
             try (FileInputStream input = new FileInputStream(file)){

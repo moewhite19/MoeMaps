@@ -16,7 +16,6 @@ import java.lang.reflect.Field;
 
 public class ImageUtils {
     static Color TRANSLUCENT = new Color(0,0,0,0); //透明颜色
-    static int STEP = 128; //图片基数
     static Field getWorldMapField = null;
     static Field getBytesField;
 
@@ -37,29 +36,39 @@ public class ImageUtils {
         try{
             BufferedImage inImage = ImageIO.read(inputStream);
             int type = inImage.getType() == BufferedImage.TYPE_3BYTE_BGR ? BufferedImage.TYPE_3BYTE_BGR : BufferedImage.TYPE_4BYTE_ABGR;
-            int w = inImage.getWidth(), h = inImage.getHeight();
-//            float ratio = (float) Math.max(w,h) / (float) Math.min(w,h);
-//            if (ratio > 5) return null;
-            float ratioHW = (float) h / (float) w;
+            double w = inImage.getWidth() / 128d, h = inImage.getHeight() / 128d;
 
             //剪裁长和宽
+            double ratioHW = h / w; //比例
             if (w > maxSize){
-                int s = w - maxSize;
+                double s = w - maxSize;
                 w = maxSize;
                 h -= s * ratioHW;
             }
             if (h > maxSize){
-                int s = h - maxSize;
+                double s = h - maxSize;
                 h = maxSize;
                 w -= (s / ratioHW);
             }
 
-            int yw = w % STEP, yh = h % STEP;
+            int fw = Math.max(1,(int) w) * 128, fh = Math.max(1,(int) h) * 128;//剪裁成128的整数
 
-            int fw = w - yw, fh = h - yh;
+            //如果图片小于128就让图片居中
+            int modX = 0, modW = fw;
+            if (w < 1){
+                modW = inImage.getWidth();
+                modX = (128 - modW) / 2;
+            }
+            int modY = 0;
+            int modH = fh;
+            if (h < 1){
+                modH = inImage.getHeight();
+                modY = (128 - modH) / 2;
+            }
+
             BufferedImage nImage = new BufferedImage(fw,fh,type);
             var graphics = nImage.getGraphics();
-            graphics.drawImage(inImage,0,0,fw,fh,TRANSLUCENT,(img,infoflags,x,y,width,height) -> true);
+            graphics.drawImage(inImage,modX,modY,modW,modH,TRANSLUCENT,(img,infoflags,x,y,width,height) -> true);
             return nImage;
         }catch (Exception e){
             e.printStackTrace();
