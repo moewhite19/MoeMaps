@@ -47,6 +47,8 @@ public class scaling extends HasCommandInterface {
         } else {
             maxSize = plugin.setting.defaultMaxSize;
         }
+        
+        maxSize = Math.max(1,maxSize) * 128;
 
         try{
             try (FileInputStream input = new FileInputStream(file)){

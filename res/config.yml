@@ -3,5 +3,5 @@ debug: false
 #自动调整图像大小输出的图片压缩质量[0 - 1]
 CompressionQuality: 0.95
 
-#自动调整图片的默认最大大小
-DefaultMaxSize: 1024
+#自动调整图片的默认最大大小(对应图片尺寸x128)
+DefaultMaxSize: 8
