@@ -4,4 +4,4 @@ debug: false
 CompressionQuality: 0.95
 
 #自动调整图片的默认最大大小(对应图片尺寸x128)
-DefaultMaxSize: 8
+DefaultMaxSize: 6
