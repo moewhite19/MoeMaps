@@ -6,11 +6,13 @@ import java.util.List;
 public abstract class EntryObject<T> implements Entry {
     private final String key;
     private final T def;
+    private final String description;
     private T current;
 
-    public EntryObject(String key,T def) {
+    public EntryObject(String key,String description,T def) {
         current = def;
         this.key = key;
+        this.description = description;
         this.def = def;
     }
 
@@ -41,5 +43,10 @@ public abstract class EntryObject<T> implements Entry {
     @Override
     public String getKey() {
         return key;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
     }
 }

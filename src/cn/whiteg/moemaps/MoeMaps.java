@@ -112,6 +112,7 @@ public class MoeMaps extends PluginBase implements Listener {
 
     public void onReload() {
         logger.info("--开始重载--");
+        autoSaveListener.onSave(null);
         setting.reload();
         imageMaps.clear();
         loadMaps();

@@ -16,8 +16,8 @@ public class AutoSaveListener implements Listener {
     @EventHandler
     public void onSave(WorldSaveEvent event) {
         if (change){
-            change = false;
             plugin.setting.saveStorage();
+            change = false;
         }
     }
 
