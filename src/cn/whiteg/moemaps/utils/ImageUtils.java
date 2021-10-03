@@ -45,17 +45,17 @@ public class ImageUtils {
     public static BufferedImage scalingImage(BufferedImage image,int maxSize,boolean cut) {
         int w = image.getWidth(), h = image.getHeight(); //当前图片大小
         double bw = w / 128d, bh = h / 128d; //图片方块大小
-        double ratioHW = h / (double) w; //比例
+        double ratio = w / (double) h; //比例
         //剪裁长和宽
         if (bw > maxSize){
             double s = bw - maxSize;
             bw = maxSize;
-            bh -= s * ratioHW;
+            bh -= s / ratio;
         }
         if (bh > maxSize){
             double s = bh - maxSize;
             bh = maxSize;
-            bw -= (s / ratioHW);
+            bw -= (s * ratio);
         }
         //框架大小,使用五舍六入
         int fw = Math.max(1,new BigDecimal(bw).setScale(0,RoundingMode.HALF_DOWN).intValue()) * 128, fh = Math.max(1,new BigDecimal(bh).setScale(0,RoundingMode.HALF_DOWN).intValue()) * 128;//剪裁成128的整数
@@ -64,8 +64,9 @@ public class ImageUtils {
 
     /**
      * 自动拉伸图片至指定尺寸
+     *
      * @param wight 宽
-     * @param high 高
+     * @param high  高
      */
 
     public static BufferedImage scalingImage(BufferedImage image,int wight,int high,boolean cut) {
@@ -78,13 +79,13 @@ public class ImageUtils {
                 modW = w;
                 modH = h;
             } else if (cut){ //剪裁
-                double ratioHW = w / (double) h; //比例
+                double ratio = w / (double) h; //比例
                 modW = wight;
-                modH = (int) (wight * ratioHW);
+                modH = (int) (wight / ratio);
                 if (modH < high){
                     int c = high - modH;
                     modH = high;
-                    modW += c / ratioHW;
+                    modW += c / ratio;
                 }
             } else { //拉伸
                 modW = wight;
@@ -120,10 +121,12 @@ public class ImageUtils {
             ImageWriteParam jpgWriteParam = jpgWriter.getDefaultWriteParam();
             jpgWriteParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
             jpgWriteParam.setCompressionQuality(quality);
-            jpgWriter.setOutput(ImageIO.createImageOutputStream(output));
-            IIOImage outputImage = new IIOImage(image,null,null);
-            jpgWriter.write(null,outputImage,jpgWriteParam);
-            jpgWriter.dispose();
+            try (var outputStream = ImageIO.createImageOutputStream(output)){
+                jpgWriter.setOutput(outputStream);
+                IIOImage outputImage = new IIOImage(image,null,null);
+                jpgWriter.write(null,outputImage,jpgWriteParam);
+                jpgWriter.dispose();
+            }
             return true;
         }catch (IOException e){
             e.printStackTrace();

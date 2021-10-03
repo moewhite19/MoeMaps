@@ -59,7 +59,6 @@ public class scaling extends HasCommandInterface {
             boolean done = ImageUtils.writeImage(image,out,quality);
             sender.sendMessage(done ? "缩放图片已保存至:" + out : "缩放图片输出失败");
             return done;
-
         }catch (Exception e){
             sender.sendMessage("转换图片过程出现异常");
             e.printStackTrace();
