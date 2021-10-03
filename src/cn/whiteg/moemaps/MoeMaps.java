@@ -105,6 +105,7 @@ public class MoeMaps extends PluginBase implements Listener {
     public void onDisable() {
         //注销所有监听器
         if (downloader != null) downloader.close();
+        autoSaveListener.onSave(null);
         unregListener();
         logger.info("插件已关闭");
     }
