@@ -38,6 +38,6 @@ public class remove extends HasCommandInterface {
 
     @Override
     public String getDescription() {
-        return "移除已加载地图:§7 <地图>";
+        return "移除地图:§7 <地图>";
     }
 }

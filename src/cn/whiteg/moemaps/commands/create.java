@@ -49,7 +49,8 @@ public class create extends HasCommandInterface {
                 ImageMap imageMap = ImageMap.create(image);
                 int index = name.lastIndexOf('.');
                 name = index == -1 ? name : name.substring(0,index);
-                plugin.putMap(name + "_" + imageMap.getWight() + "x" + imageMap.getHigh(),imageMap,true);
+                name = name + "_" + imageMap.getWight() + "x" + imageMap.getHigh();
+                plugin.putMap(name,imageMap,true);
                 sender.sendMessage(" §b已创建地图§f" + name);
             }
         }catch (Exception exception){
