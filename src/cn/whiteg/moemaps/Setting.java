@@ -1,5 +1,8 @@
 package cn.whiteg.moemaps;
 
+import cn.whiteg.moemaps.parameter.EntryBoolean;
+import cn.whiteg.moemaps.parameter.EntryFloat;
+import cn.whiteg.moemaps.parameter.EntryInt;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -9,17 +12,25 @@ import java.io.IOException;
 import java.util.Set;
 
 public class Setting {
-    private final static int CONFIGVER = 2;
+    private final static int CONFIGVER = 3;
     private static FileConfiguration storage;
     private final MoeMaps plugin;
     public boolean DEBUG;
     public float compressionQuality; //图片压缩质量
     public int defaultMaxSize; //默认最大图片大小
     public boolean defaultCut; //默认剪裁图片
+    public double ugetPrice; //单个地图
+    public EntryInt maxSize;
+    public EntryBoolean cut;
+    public EntryFloat quality;
 
     public Setting(MoeMaps plugin) {
         this.plugin = plugin;
         reload();
+        //下面的东西重载也没用呢，那就只重载一次吧
+        maxSize = new EntryInt("size","地图大小",defaultMaxSize);
+        cut = new EntryBoolean("cut","剪裁模式",defaultCut);
+        quality = new EntryFloat("quality","输出质量",compressionQuality);
     }
 
 
@@ -49,6 +60,7 @@ public class Setting {
         compressionQuality = Math.min(1f,Math.max(0f,(float) config.getDouble("CompressionQuality",1d)));
         defaultMaxSize = Math.max(1,config.getInt("DefaultMaxSize",6));
         defaultCut = config.getBoolean("DefaultCut",false);
+        ugetPrice = config.getDouble("UgetPrice",128);
 
 
         storage = new YamlConfiguration();

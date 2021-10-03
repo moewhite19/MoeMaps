@@ -39,7 +39,7 @@ public class get extends HasCommandInterface {
             return false;
         }
         try{
-            ImageMap map = plugin.createMap(name);
+            ImageMap map = plugin.getMapFormName(name);
             if (map == null){
                 sender.sendMessage("§b地图§f " + name + " §b不存在");
                 return false;
@@ -65,8 +65,6 @@ public class get extends HasCommandInterface {
                     }
                 }
             }
-
-
         }catch (Exception exception){
             sender.sendMessage(exception.getMessage());
             exception.printStackTrace();
@@ -92,6 +90,6 @@ public class get extends HasCommandInterface {
 
     @Override
     public String getDescription() {
-        return "获取图片地图: <图片名称> [给与玩家] [图片x] [图片y]";
+        return "获取图片地图，可以获取整个也可以获取指定位置的地图:§7 <图片名称> [给与玩家] <图片x> <图片y>";
     }
 }

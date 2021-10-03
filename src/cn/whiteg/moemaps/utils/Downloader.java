@@ -81,7 +81,9 @@ public abstract class Downloader extends Thread {
 
     }
 
-    public abstract long getDownloaded();
+    public long getDownloaded() {
+        return 0;
+    }
 
     public long getSize() {
         return size;

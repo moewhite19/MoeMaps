@@ -3,6 +3,7 @@ package cn.whiteg.moemaps;
 import cn.whiteg.moemaps.common.CommandManage;
 import cn.whiteg.moemaps.common.PluginBase;
 import cn.whiteg.moemaps.listener.AutoSaveListener;
+import cn.whiteg.moemaps.utils.Downloader;
 import cn.whiteg.moemaps.utils.ReturnCache;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -28,9 +29,12 @@ public class MoeMaps extends PluginBase implements Listener {
     public Logger logger;
     public CommandManage mainCommand;
     public Setting setting;
+    public Downloader downloader = null;
     Map<String, ImageMap> imageMaps = new HashMap<>();
     private Economy economy;
     private AutoSaveListener autoSaveListener;
+    private boolean mmocoreSupport;
+    private boolean residenceSupport;
 
     public MoeMaps() {
         plugin = this;
@@ -92,11 +96,15 @@ public class MoeMaps extends PluginBase implements Listener {
                     this.economy = economyProvider.getProvider();
                 }
             }
+
+            mmocoreSupport = Bukkit.getPluginManager().isPluginEnabled("MMOCore");
+            residenceSupport = Bukkit.getPluginManager().isPluginEnabled("Residence");
         });
     }
 
     public void onDisable() {
         //注销所有监听器
+        if (downloader != null) downloader.close();
         unregListener();
         logger.info("插件已关闭");
     }
@@ -159,17 +167,6 @@ public class MoeMaps extends PluginBase implements Listener {
         return imageMaps;
     }
 
-    //用名字获取地图
-    public ImageMap createMap(String name) {
-        ImageMap map = getMapFormName(name);
-        if (map == null){
-            BufferedImage image = plugin.readImage(name);
-            map = ImageMap.create(image);
-            putMap(name,map,true);
-        }
-        return map;
-    }
-
     public BufferedImage readImage(String name) {
         var file = new File(imagesDir,name);
         if (!file.exists() || file.isDirectory()) throw new IllegalArgumentException("找不到图片" + file);
@@ -196,4 +193,12 @@ public class MoeMaps extends PluginBase implements Listener {
         return economy;
     }
 
+    public boolean hasResidence() {
+        return residenceSupport;
+    }
+
+    //是否启用多人指令
+    public boolean hasMultiPlayer() {
+        return mmocoreSupport && economy != null;
+    }
 }

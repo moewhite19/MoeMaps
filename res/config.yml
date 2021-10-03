@@ -1,4 +1,4 @@
-ver: 2
+ver: 3
 debug: false
 #自动调整图像大小输出的图片压缩质量[0 - 1]
 CompressionQuality: 0.95
@@ -8,3 +8,6 @@ DefaultMaxSize: 6
 
 #默认剪裁图片(反之拉伸
 DefaultCut: false
+
+#地图价格(每个
+UgetPrice: 64

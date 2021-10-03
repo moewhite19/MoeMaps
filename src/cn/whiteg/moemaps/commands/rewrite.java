@@ -2,6 +2,8 @@ package cn.whiteg.moemaps.commands;
 
 import cn.whiteg.moemaps.MoeMaps;
 import cn.whiteg.moemaps.common.HasCommandInterface;
+import cn.whiteg.moemaps.parameter.Parameter;
+import cn.whiteg.moemaps.utils.ImageUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -9,9 +11,12 @@ import java.util.List;
 
 public class rewrite extends HasCommandInterface {
     private final MoeMaps plugin;
+    private final Parameter parameter;
 
     public rewrite(MoeMaps plugin) {
         this.plugin = plugin;
+        parameter = new Parameter();
+        parameter.add(plugin.setting.cut);
     }
 
     @Override
@@ -21,13 +26,21 @@ public class rewrite extends HasCommandInterface {
             return false;
         }
         String name = args[0];
+        String fileName;
+        if (args.length > 2){
+            fileName = args[1];
+        } else {
+            fileName = name;
+        }
         try{
             var map = plugin.getMapFormName(name);
             if (map == null){
                 sender.sendMessage(" §b找不到地图: §f" + name);
                 return false;
             }
-            var image = plugin.readImage(name);
+            parameter.apply(args,2);
+            boolean cut = plugin.setting.cut.getAndReset();
+            var image = ImageUtils.scalingImage(plugin.readImage(fileName),map.getHigh() * 128,map.getHigh() * 128,cut);
             map.rewrite(image);
             sender.sendMessage("§b已重新写入地图 §f" + name);
         }catch (IllegalArgumentException exception){
@@ -43,11 +56,13 @@ public class rewrite extends HasCommandInterface {
 
     @Override
     public List<String> complete(CommandSender sender,Command cmd,String label,String[] args) {
-        return getMatches(plugin.getLoadedImageList(),args);
+        if (args.length == 1) return getMatches(plugin.getLoadedImageList(),args);
+        else if (args.length == 2) return getMatches(plugin.getFileImageList(),args);
+        return null;
     }
 
     @Override
     public String getDescription() {
-        return "重写指定地图(保留现有id)，图片丢失时使用） : <图片>";
+        return "重写指定地图:§7<地图> <文件> " + parameter.getDescription();
     }
 }

@@ -4,7 +4,8 @@ version: 1.1
 api-version: 1.13
 author: MoeWhite
 depend: [ Vault ]
+softdepend: [ Residence, MMOCore ]
 commands:
   moemaps:
-    description: The is MoeSign Command
-    aliases: [ 'mm' ]
+    description: The is MoeMaps Command
+    aliases: [ 'mm','mmap','maps' ]

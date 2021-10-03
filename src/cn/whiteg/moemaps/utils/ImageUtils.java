@@ -15,7 +15,6 @@ import javax.imageio.ImageWriter;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -37,30 +36,41 @@ public class ImageUtils {
 //        Objects.requireNonNull(getBytesField);
     }
 
-    //自动拉伸图片
-    public static BufferedImage scalingImage(InputStream inputStream,int maxSize,boolean cut) {
+
+    /**
+     * 限制一张图片的最大地图数量
+     *
+     * @param maxSize 地图数量(一张地图128x)
+     */
+    public static BufferedImage scalingImage(BufferedImage image,int maxSize,boolean cut) {
+        int w = image.getWidth(), h = image.getHeight(); //当前图片大小
+        double bw = w / 128d, bh = h / 128d; //图片方块大小
+        double ratioHW = h / (double) w; //比例
+        //剪裁长和宽
+        if (bw > maxSize){
+            double s = bw - maxSize;
+            bw = maxSize;
+            bh -= s * ratioHW;
+        }
+        if (bh > maxSize){
+            double s = bh - maxSize;
+            bh = maxSize;
+            bw -= (s / ratioHW);
+        }
+        //框架大小,使用五舍六入
+        int fw = Math.max(1,new BigDecimal(bw).setScale(0,RoundingMode.HALF_DOWN).intValue()) * 128, fh = Math.max(1,new BigDecimal(bh).setScale(0,RoundingMode.HALF_DOWN).intValue()) * 128;//剪裁成128的整数
+        return scalingImage(image,fw,fh,cut);
+    }
+
+    /**
+     * 自动拉伸图片至指定尺寸
+     * @param wight 宽
+     * @param high 高
+     */
+
+    public static BufferedImage scalingImage(BufferedImage image,int wight,int high,boolean cut) {
         try{
-            BufferedImage inImage = ImageIO.read(inputStream);
-            int w = inImage.getWidth(), h = inImage.getHeight(); //当前图片大小
-            int type = inImage.getType();
-            double bw = w / 128d, bh = h / 128d; //图片方块大小
-            double ratioHW = bh / bw; //比例
-
-            //剪裁长和宽
-            if (bw > maxSize){
-                double s = bw - maxSize;
-                bw = maxSize;
-                bh -= s * ratioHW;
-            }
-            if (bh > maxSize){
-                double s = bh - maxSize;
-                bh = maxSize;
-                bw -= (s / ratioHW);
-            }
-
-            //框架大小,使用五舍六入
-            int fw = Math.max(1,new BigDecimal(bw).setScale(0,RoundingMode.HALF_DOWN).intValue()) * 128, fh = Math.max(1,new BigDecimal(bh).setScale(0,RoundingMode.HALF_DOWN).intValue()) * 128;//剪裁成128的整数
-
+            int w = image.getWidth(), h = image.getHeight(); //当前图片大小
             //修正大小
             int modW, modH;
 
@@ -68,29 +78,30 @@ public class ImageUtils {
                 modW = w;
                 modH = h;
             } else if (cut){ //剪裁
-                modW = fw;
-                modH = (int) (fw * ratioHW);
-                if (modH < fh){
-                    int c = fh - modH;
-                    modH = fh;
+                double ratioHW = w / (double) h; //比例
+                modW = wight;
+                modH = (int) (wight * ratioHW);
+                if (modH < high){
+                    int c = high - modH;
+                    modH = high;
                     modW += c / ratioHW;
                 }
             } else { //拉伸
-                modW = fw;
-                modH = fh;
+                modW = wight;
+                modH = high;
             }
 
             //偏移值
             int modX = 0, modY = 0;
-            if (modW != fw){
-                modX = (fw - modW) / 2;
+            if (modW != wight){
+                modX = (wight - modW) / 2;
             }
-            if (modH != fh){
-                modY = (fh - modH) / 2;
+            if (modH != high){
+                modY = (high - modH) / 2;
             }
-            BufferedImage nImage = new BufferedImage(fw,fh,type);
+            BufferedImage nImage = new BufferedImage(wight,high,image.getType());
             var graphics = nImage.getGraphics();
-            graphics.drawImage(inImage,modX,modY,modW,modH,TRANSLUCENT,(img,infoflags,x,y,width,height) -> true);
+            graphics.drawImage(image,modX,modY,modW,modH,TRANSLUCENT,(img,infoflags,x,y,width,height) -> true);
             return nImage;
         }catch (Exception e){
             e.printStackTrace();
@@ -98,9 +109,7 @@ public class ImageUtils {
         }
     }
 
-
     /**
-     * @param image   输入图片
      * @param output  输出，可以是File也可以是OutputStream
      * @param quality 图片质量,范围[0-1]
      * @return 是否成功

@@ -63,6 +63,6 @@ public class rename extends HasCommandInterface {
 
     @Override
     public String getDescription() {
-        return "重命名地图: <图片名称> <新图片名称>";
+        return "重命名地图或者文件:§7<当前名称> <新名称>";
     }
 }

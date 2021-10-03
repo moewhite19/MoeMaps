@@ -47,6 +47,6 @@ public class delete extends HasCommandInterface {
 
     @Override
     public String getDescription() {
-        return "删除图片(不会删除已加载的): <文件名称|图片名称>";
+        return "删除图片文件:<文件名>";
     }
 }

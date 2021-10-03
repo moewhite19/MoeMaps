@@ -8,6 +8,14 @@ public class CommonUtils {
     private final static long minute = 60000L;
     private final static long second = 1000L;
 
+
+    //字符串是否可以用来当配置名
+    public static void validKey(String key) {
+        if (key == null || key.isEmpty() || key.contains("\\") || key.contains("/")){
+            throw new IllegalArgumentException("invalid key");
+        }
+    }
+
     public static long getTimeMintoh(String str) {
         if (str.isEmpty()) return 0;
         try{

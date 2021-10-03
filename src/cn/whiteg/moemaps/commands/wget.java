@@ -14,7 +14,6 @@ import java.util.List;
 
 public class wget extends HasCommandInterface {
     private final MoeMaps plugin;
-    Downloader downloader = null;
 
     public wget(MoeMaps plugin) {
         this.plugin = plugin;
@@ -28,9 +27,9 @@ public class wget extends HasCommandInterface {
         }
         String url = args[0];
 
-        if (downloader != null && !downloader.isClosed()) downloader.close();
+        if (plugin.downloader != null && !plugin.downloader.isClosed()) plugin.downloader.close();
 
-        downloader = new Downloader(url,sender) {
+        plugin.downloader = new Downloader(url,sender) {
             long downloaded = 0;
             File file;
 
@@ -43,7 +42,7 @@ public class wget extends HasCommandInterface {
                     name = getFileName(getConn().getURL());
                 }
                 file = new File(plugin.imagesDir,name);
-                info("正在下载至文件: " + file);
+                info(" §b正在下载至文件:§f " + file);
                 try{
                     if (!file.exists() || file.isDirectory()) file.delete();
                     try (var output = new FileOutputStream(file)){
@@ -62,14 +61,14 @@ public class wget extends HasCommandInterface {
             @Override
             public void onError() {
                 super.onError();
-                downloader = null;
+                plugin.downloader = null;
                 if (file != null) file.delete();
             }
 
             @Override
             public void onDone() {
                 super.onDone();
-                downloader = null;
+                plugin.downloader = null;
             }
 
             @Override
@@ -77,7 +76,7 @@ public class wget extends HasCommandInterface {
                 return downloaded;
             }
         };
-        downloader.start();
+        plugin.downloader.start();
         return true;
     }
 
@@ -96,6 +95,6 @@ public class wget extends HasCommandInterface {
 
     @Override
     public String getDescription() {
-        return "从网络上下载图片: <图片地址> [储存名称:默认从链接获取]";
+        return "从网络上下载图片:§7<图片地址> [储存名称:默认从链接获取]";
     }
 }
