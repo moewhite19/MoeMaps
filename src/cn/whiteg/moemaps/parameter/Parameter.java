@@ -1,5 +1,6 @@
 package cn.whiteg.moemaps.parameter;
 
+import cn.whiteg.moemaps.common.CommandInterface;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.ArrayList;
@@ -57,9 +58,9 @@ public class Parameter {
             valve = late.substring(in + 1);
         }
         Entry entry = entries.get(key);
-        if (entry == null) return keys;
+        if (entry == null) return CommandInterface.getMatches(args,keys);
         List<String> backs = entry.tab(valve);
-        if (backs == null || backs.isEmpty()) return keys;
+        if (backs == null || backs.isEmpty()) return CommandInterface.getMatches(args,keys);
         List<String> tabs = new ArrayList<>(backs.size());
         for (String back : backs) {
             String keyAndBAck = key.concat(":").concat(back);
