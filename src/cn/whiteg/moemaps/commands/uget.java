@@ -143,6 +143,6 @@ public class uget extends HasCommandInterface {
 
     @Override
     public String getDescription() {
-        return "§b从网络上下载图片:§7<图片地址>§b " + parameter.getDescription();
+        return "§b从网络上下载图片:§7<图片地址> " + parameter.getDescription();
     }
 }

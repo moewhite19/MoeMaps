@@ -177,7 +177,7 @@ public class MoeMaps extends PluginBase implements Listener {
         }
     }
 
-    public List<String> getLoadedImageList() {
+    public List<String> getMapImageList() {
         return loadImageListCache.get();
     }
 

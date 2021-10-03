@@ -56,7 +56,7 @@ public class rewrite extends HasCommandInterface {
 
     @Override
     public List<String> complete(CommandSender sender,Command cmd,String label,String[] args) {
-        if (args.length == 1) return getMatches(plugin.getLoadedImageList(),args);
+        if (args.length == 1) return getMatches(plugin.getMapImageList(),args);
         else if (args.length == 2) return getMatches(plugin.getFileImageList(),args);
         return null;
     }
