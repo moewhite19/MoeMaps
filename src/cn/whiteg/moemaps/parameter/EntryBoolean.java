@@ -10,6 +10,7 @@ public class EntryBoolean implements Entry {
     private boolean current;
 
     public EntryBoolean(String key,String description,boolean def) {
+        current = def;
         this.key = key;
         this.description = description;
         this.def = def;

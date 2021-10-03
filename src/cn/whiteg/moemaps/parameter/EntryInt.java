@@ -10,6 +10,7 @@ public class EntryInt implements Entry {
     private int current;
 
     public EntryInt(String key,String description,int def) {
+        current = def;
         this.key = key;
         this.description = description;
         this.def = def;

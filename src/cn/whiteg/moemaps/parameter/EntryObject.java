@@ -9,6 +9,7 @@ public abstract class EntryObject<T> implements Entry {
     private T current;
 
     public EntryObject(String key,T def) {
+        current = def;
         this.key = key;
         this.def = def;
     }

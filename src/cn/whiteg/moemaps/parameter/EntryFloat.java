@@ -10,6 +10,7 @@ public class EntryFloat implements Entry {
     private float current;
 
     public EntryFloat(String key ,String description,float def) {
+        current = def;
         this.key = key;
         this.description = description;
         this.def = def;
