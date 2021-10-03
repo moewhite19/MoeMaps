@@ -54,7 +54,11 @@ public class uget extends HasCommandInterface {
         }
 
 
-        parameter.apply(args,1);
+        try{
+            parameter.apply(args,1);
+        }catch (IllegalArgumentException e){
+            sender.sendMessage(e.getMessage());
+        }
         boolean place = this.plac.getAndReset();
         int maxSize = plugin.setting.maxSize.getAndReset();
         boolean cut = plugin.setting.cut.getAndReset();

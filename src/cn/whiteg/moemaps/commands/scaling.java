@@ -42,7 +42,12 @@ public class scaling extends HasCommandInterface {
             return false;
         }
 
-        parameter.apply(args,1);
+        try{
+            parameter.apply(args,1);
+        }catch (IllegalArgumentException exception){
+            sender.sendMessage(exception.getMessage());
+            return false;
+        }
         int size = plugin.setting.maxSize.getAndReset();
         boolean cut = plugin.setting.cut.getAndReset();
         float quality = plugin.setting.quality.getAndReset();

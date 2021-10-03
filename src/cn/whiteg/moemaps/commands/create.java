@@ -31,7 +31,12 @@ public class create extends HasCommandInterface {
             return false;
         }
         String name = args[0];
-        parameter.apply(args,1);
+        try{
+            parameter.apply(args,1);
+        }catch (IllegalArgumentException exception){
+            sender.sendMessage(exception.getMessage());
+            return false;
+        }
         int size = plugin.setting.maxSize.getAndReset();
         boolean cut = plugin.setting.cut.getAndReset();
         try{
