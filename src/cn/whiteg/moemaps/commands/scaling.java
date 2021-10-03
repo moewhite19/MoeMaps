@@ -24,6 +24,7 @@ public class scaling extends HasCommandInterface {
         parameter.add(setting.maxSize);
         parameter.add(setting.cut);
         parameter.add(setting.quality);
+        parameter.decide();
     }
 
 

@@ -35,6 +35,7 @@ public class uget extends HasCommandInterface {
         parameter.add(plugin.setting.maxSize);
         parameter.add(plugin.setting.cut);
         plac = parameter.add(new EntryBoolean("plac","放置模式",true));
+        parameter.decide();
     }
 
     @Override
