@@ -3,10 +3,7 @@ package cn.whiteg.moemaps.parameter;
 import cn.whiteg.moemaps.common.CommandInterface;
 import com.google.common.collect.ImmutableMap;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Parameter {
     Map<String, Entry> entries = new HashMap<>();
@@ -74,10 +71,13 @@ public class Parameter {
     //完成设定
     public void decide() {
         entries = ImmutableMap.copyOf(entries);
-        keys = new ArrayList<>(entries.keySet());
-        for (int i = 0; i < keys.size(); i++) {
-            keys.set(i,keys.get(i) + ":");
+        var values = entries.values();
+        var array = new String[values.size()];
+        int i = 0;
+        for (Entry value : values) {
+            array[i++] = value.getKey() + ":" + value.getStringValue();
         }
+        keys = Arrays.asList(array);
     }
 
     public String getDescription() {

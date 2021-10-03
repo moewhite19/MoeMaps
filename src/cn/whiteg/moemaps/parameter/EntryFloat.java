@@ -44,6 +44,11 @@ public class EntryFloat implements Entry {
     }
 
     @Override
+    public String getStringValue() {
+        return String.valueOf(current);
+    }
+
+    @Override
     public String getDescription() {
         return description;
     }

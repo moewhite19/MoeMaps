@@ -21,6 +21,7 @@ public class create extends HasCommandInterface {
         parameter = new Parameter();
         parameter.add(plugin.setting.maxSize);
         parameter.add(plugin.setting.cut);
+        parameter.add(plugin.setting.direction);
         parameter.decide();
     }
 

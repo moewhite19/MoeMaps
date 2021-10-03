@@ -44,6 +44,11 @@ public class EntryBoolean implements Entry {
     }
 
     @Override
+    public String getStringValue() {
+        return current ? "0" : "1";
+    }
+
+    @Override
     public String getDescription() {
         return description;
     }

@@ -11,6 +11,8 @@ public interface Entry {
 
     String getKey();
 
+    String getStringValue();
+
     default String getDescription() {
         return getKey();
     }
