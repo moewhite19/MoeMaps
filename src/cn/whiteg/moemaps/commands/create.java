@@ -45,6 +45,7 @@ public class create extends HasCommandInterface {
                 int index = name.lastIndexOf('.');
                 name = index == -1 ? name : name.substring(0,index);
                 plugin.putMap(name + "_" + imageMap.getWight() + "x" + imageMap.getHigh(),imageMap,true);
+                sender.sendMessage(" §b已创建地图§f" + name);
             }
         }catch (Exception exception){
             sender.sendMessage(exception.getMessage());
@@ -62,10 +63,8 @@ public class create extends HasCommandInterface {
     public List<String> complete(CommandSender sender,Command cmd,String label,String[] args) {
         if (args.length == 1){
             return getMatches(plugin.getFileImageList(),args);
-        } else if (args.length == 2){
-            return getPlayersList(args);
         }
-        return null;
+        return parameter.tab(args);
     }
 
     @Override
