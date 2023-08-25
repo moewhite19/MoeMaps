@@ -19,9 +19,9 @@ public class create extends HasCommandInterface {
     public create(MoeMaps plugin) {
         this.plugin = plugin;
         parameter = new Parameter();
-        parameter.add(plugin.setting.maxSize);
+        parameter.add(plugin.setting.size);
         parameter.add(plugin.setting.cut);
-        parameter.add(plugin.setting.direction);
+//        parameter.add(plugin.setting.direction);
         parameter.decide();
     }
 
@@ -38,7 +38,7 @@ public class create extends HasCommandInterface {
             sender.sendMessage(exception.getMessage());
             return false;
         }
-        int size = plugin.setting.maxSize.getAndReset();
+        int size = plugin.setting.size.getAndReset();
         boolean cut = plugin.setting.cut.getAndReset();
         try{
             ImageMap existing = plugin.getMapFormName(name);

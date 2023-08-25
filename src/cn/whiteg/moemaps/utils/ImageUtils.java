@@ -100,7 +100,7 @@ public class ImageUtils {
             if (modH != high){
                 modY = (high - modH) / 2;
             }
-            BufferedImage nImage = new BufferedImage(wight,high,image.getType());
+            BufferedImage nImage = new BufferedImage(wight,high,image.getColorModel().hasAlpha() ? BufferedImage.TYPE_4BYTE_ABGR : BufferedImage.TYPE_3BYTE_BGR);
             var graphics = nImage.getGraphics();
             graphics.drawImage(image,modX,modY,modW,modH,TRANSLUCENT,(img,infoflags,x,y,width,height) -> true);
             return nImage;

@@ -1,6 +1,6 @@
 package cn.whiteg.moemaps.parameter;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 public class EntryBoolean implements Entry {
@@ -21,7 +21,7 @@ public class EntryBoolean implements Entry {
     }
 
     public List<String> tab(String str) {
-        return Collections.singletonList(def ? "1" : "0");
+        return Arrays.asList("0","1");
     }
 
     public boolean getAndReset() {

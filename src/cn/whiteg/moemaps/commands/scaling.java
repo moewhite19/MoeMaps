@@ -21,7 +21,7 @@ public class scaling extends HasCommandInterface {
         this.plugin = plugin;
         parameter = new Parameter();
         var setting = plugin.setting;
-        parameter.add(setting.maxSize);
+        parameter.add(setting.size);
         parameter.add(setting.cut);
         parameter.add(setting.quality);
         parameter.decide();
@@ -48,7 +48,7 @@ public class scaling extends HasCommandInterface {
             sender.sendMessage(exception.getMessage());
             return false;
         }
-        int size = plugin.setting.maxSize.getAndReset();
+        int size = plugin.setting.size.getAndReset();
         boolean cut = plugin.setting.cut.getAndReset();
         float quality = plugin.setting.quality.getAndReset();
         try (FileInputStream input = new FileInputStream(file)){

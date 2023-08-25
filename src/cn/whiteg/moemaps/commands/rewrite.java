@@ -28,7 +28,7 @@ public class rewrite extends HasCommandInterface {
         }
         String name = args[0];
         String fileName;
-        if (args.length > 2){
+        if (args.length >= 2){
             fileName = args[1];
         } else {
             fileName = name;

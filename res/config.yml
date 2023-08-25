@@ -6,6 +6,9 @@ CompressionQuality: 0.95
 #自动调整图片的默认最大大小(对应图片尺寸x128)
 DefaultMaxSize: 6
 
+#最大允许的大小限制
+MaxSize: 12
+
 #默认剪裁图片(反之拉伸
 DefaultCut: false
 

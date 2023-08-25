@@ -32,7 +32,7 @@ public class uget extends HasCommandInterface {
     public uget(MoeMaps plugin) {
         this.plugin = plugin;
         parameter = new Parameter();
-        parameter.add(plugin.setting.maxSize);
+        parameter.add(plugin.setting.size);
         parameter.add(plugin.setting.cut);
         plac = parameter.add(new EntryBoolean("plac","放置模式",true));
         parameter.decide();
@@ -43,7 +43,8 @@ public class uget extends HasCommandInterface {
         if (!(sender instanceof Player player)) return false;
         if (args.length < 1){
             sender.sendMessage(getDescription());
-            sender.sendMessage("§f max§b属性代表地图的尺寸,越大越清晰，但也会更贵");
+            sender.sendMessage("§b 将图片上传到任意图床获得图片地址，如果无法下载请尝试换个图床");
+            sender.sendMessage("§f size§b属性代表最大地图数量，当前每张地图单价为§f" + plugin.setting.ugetPrice);
             sender.sendMessage("§f cut§b为剪裁模式,当图片尺寸较小时建议打开，不然拉伸会导致图片变形严重");
             sender.sendMessage("§f place§b的参数如果改成0的话，请一定要在获取地图前放下背包内的杂物。");
             return false;
@@ -60,10 +61,11 @@ public class uget extends HasCommandInterface {
             sender.sendMessage(e.getMessage());
         }
         boolean place = this.plac.getAndReset();
-        int maxSize = plugin.setting.maxSize.getAndReset();
+        int size = plugin.setting.size.getAndReset();
+        final int maxSize = size > plugin.setting.maxSize ? plugin.setting.maxSize : size; //限制最大大小
         boolean cut = plugin.setting.cut.getAndReset();
 
-        EconomyResponse response = plugin.getEconomy().withdrawPlayer(player,maxSize * plugin.setting.ugetPrice);
+        EconomyResponse response = plugin.getEconomy().withdrawPlayer(player,(size * size) * plugin.setting.ugetPrice);
         if (response.type != EconomyResponse.ResponseType.SUCCESS){
             sender.sendMessage(response.errorMessage);
             return false;
@@ -94,6 +96,7 @@ public class uget extends HasCommandInterface {
             @Override
             public void onError() {
                 super.onError();
+                if (plugin.downloader == null) return;
                 plugin.downloader = null;
                 Bukkit.getScheduler().runTask(plugin,() -> {
                     double back = response.amount * 0.8;
@@ -104,10 +107,14 @@ public class uget extends HasCommandInterface {
 
             @Override
             public void onDone() {
-                super.onDone();
                 plugin.downloader = null;
                 var map = ImageMap.create(image);
                 Bukkit.getScheduler().runTask(plugin,() -> {
+                    double back = response.amount - ((map.getHigh() * map.getWight()) * plugin.setting.ugetPrice);
+                    if (back > 0){
+                        info(" §b图片尺寸小于预估,已退回§f" + back);
+                        plugin.getEconomy().depositPlayer(player,back);
+                    }
                     if (place){
                         Placing placing = new Placing(plugin,player,map);
                         placing.setFailClose(false);
